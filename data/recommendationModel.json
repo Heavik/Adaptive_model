@@ -1,1 +1,4 @@
-[{"condition": "atNight", "result": "whispering death"}]
+[
+    { "condition": "atNight", "result": "whispering death" },
+    { "condition": "seasonIncludes", "conditionArgs": ["winter"], "result": "beefy" }
+]
