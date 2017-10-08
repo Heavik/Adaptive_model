@@ -4,26 +4,32 @@ import getModel from './recommendationModel.js';
 export default function(spec) {
     let result = [];
     result = result.concat(executeModel(spec));
-    if(spec.minDuration >= 150) {
-        if(seasonIncludes(spec, "summer")) {
-            if(spec.minDuration < 350) result.push("white lightening");
-            else if(spec.minDuration < 570) result.push("little master");
-            else result.push("wall");
-        }
-        else {
-            if(spec.minDuration < 450) result.push("white lightening");
-            else result.push("little master");
-        }
+    const noSummerPicks = [
+        [150, []],
+        [450, 'white lightening'],
+        [Infinity, 'little master']
+    ];
+    if (!seasonIncludes(spec, "summer")) {
+        result = result.concat(pickMinDuration(spec, noSummerPicks));
     }
     return _.uniq(result);
 }
 
 function executeModel(spec) {
     let model = getModel();
-    return model
+    return _.chain(model)
         .filter((r) => isActive(r, spec))
-        .map((r) => r.result);
-    
+        .map((r) => result(r, spec))
+        .flatten()
+        .value();
+}
+
+function result(rule, spec) {
+    if(rule.result === 'value') return rule.resultArgs[0];
+    if(rule.result === 'pickMinDuration') {
+        return pickMinDuration(spec, rule.resultArgs[0]);
+    }
+    throw new Error("unknown result function: " + r.result)
 }
 
 function isActive(rule, spec) {
@@ -31,6 +37,7 @@ function isActive(rule, spec) {
     if (rule.condition === 'seasonIncludes') return seasonIncludes(spec, rule.conditionArgs[0]);
     if (rule.condition === 'countryIncludedIn') return countryIncludedIn(spec, rule.conditionArgs);
     if (rule.condition === 'and') return rule.conditionArgs.every((arg) => isActive(arg, spec));
+    if (rule.condition === 'pickMinDuration') return true;
     throw new Error("unable to handle " + rule.condition);
 }
 
@@ -40,4 +47,15 @@ function seasonIncludes(spec, arg) {
 
 function countryIncludedIn(spec, anArray) {
     return anArray.includes(spec.country);
+}
+
+function pickMinDuration(spec, range) {
+    if(spec.minDuration)
+       return pickFromRange(range, spec.minDuration);
+    else return [];
+}
+
+function pickFromRange(range, value) {
+    const matchIndex = range.findIndex((r) => value < r[0]);
+    return range[matchIndex][1];
 }

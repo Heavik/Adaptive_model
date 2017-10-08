@@ -5,7 +5,7 @@ let spec = {
     atNight: false,
     seasons: ["summer"],
     country: "sparta",
-    minDuration: 300
+    minDuration: 450
 };
 
 loadJson();
