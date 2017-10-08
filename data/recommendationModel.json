@@ -1,4 +1,12 @@
 [
     { "condition": "atNight", "result": "whispering death" },
-    { "condition": "seasonIncludes", "conditionArgs": ["winter"], "result": "beefy" }
+    { "condition": "seasonIncludes", "conditionArgs": ["winter"], "result": "beefy" },
+    {
+        "condition": "and",
+        "conditionArgs": [
+            { "condition": "seasonIncludes", "conditionArgs": ["summer"] },
+            { "condition": "countryIncludedIn", "conditionArgs": ["sparta", "atlantis"] }
+        ],
+        "result": "white lightening"
+    }
 ]

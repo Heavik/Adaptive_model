@@ -4,9 +4,6 @@ import getModel from './recommendationModel.js';
 export default function(spec) {
     let result = [];
     result = result.concat(executeModel(spec));
-    if(seasonIncludes(spec, "summer")) {
-        if(["sparta", "atlantis"].includes(spec.country)) result.push("white lightening");
-    }
     if(spec.minDuration >= 150) {
         if(seasonIncludes(spec, "summer")) {
             if(spec.minDuration < 350) result.push("white lightening");
@@ -32,9 +29,15 @@ function executeModel(spec) {
 function isActive(rule, spec) {
     if (rule.condition === 'atNight') return spec.atNight;
     if (rule.condition === 'seasonIncludes') return seasonIncludes(spec, rule.conditionArgs[0]);
+    if (rule.condition === 'countryIncludedIn') return countryIncludedIn(spec, rule.conditionArgs);
+    if (rule.condition === 'and') return rule.conditionArgs.every((arg) => isActive(arg, spec));
     throw new Error("unable to handle " + rule.condition);
 }
 
 function seasonIncludes(spec, arg) {
     return spec.seasons && spec.seasons.includes(arg);
+}
+
+function countryIncludedIn(spec, anArray) {
+    return anArray.includes(spec.country);
 }
