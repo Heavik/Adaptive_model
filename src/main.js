@@ -3,9 +3,9 @@ import { loadJson } from './recommendationModel.js';
 
 let spec = {
     atNight: false,
-    seasons: ["summer"],
+    seasons: ["winter"],
     country: "sparta",
-    minDuration: 450
+    minDuration: 1000
 };
 
 loadJson();

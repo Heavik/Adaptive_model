@@ -4,14 +4,6 @@ import getModel from './recommendationModel.js';
 export default function(spec) {
     let result = [];
     result = result.concat(executeModel(spec));
-    const noSummerPicks = [
-        [150, []],
-        [450, 'white lightening'],
-        [Infinity, 'little master']
-    ];
-    if (!seasonIncludes(spec, "summer")) {
-        result = result.concat(pickMinDuration(spec, noSummerPicks));
-    }
     return _.uniq(result);
 }
 
@@ -38,6 +30,7 @@ function isActive(rule, spec) {
     if (rule.condition === 'countryIncludedIn') return countryIncludedIn(spec, rule.conditionArgs);
     if (rule.condition === 'and') return rule.conditionArgs.every((arg) => isActive(arg, spec));
     if (rule.condition === 'pickMinDuration') return true;
+    if (rule.condition === 'not') return !isActive(rule.conditionArgs[0], spec);
     throw new Error("unable to handle " + rule.condition);
 }
 
