@@ -23,10 +23,8 @@ export default function(spec) {
 }
 
 function executeModel(spec) {
-    let result = [];
-    model
+    return model
         .filter((r) => r.condition(spec))
-        .forEach((r) => r.action(result));
+        .map((r) => r.result);
     
-    return result;
 }
