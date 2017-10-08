@@ -1,4 +1,5 @@
 import _ from '../node_modules/lodash/lodash.js';
+import model from './recommendationModel.js';
 
 export default function(spec) {
     let result = [];
@@ -19,4 +20,13 @@ export default function(spec) {
         }
     }
     return _.uniq(result);
+}
+
+function executeModel(spec) {
+    let result = [];
+    model
+        .filter((r) => r.condition(spec))
+        .forEach((r) => r.action(result));
+    
+    return result;
 }
