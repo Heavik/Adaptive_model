@@ -1,9 +1,9 @@
 import _ from '../node_modules/lodash/lodash.js';
-import model from './recommendationModel.js';
+import getModel from './recommendationModel.js';
 
 export default function(spec) {
     let result = [];
-    if(spec.atNight) result.push("whispering death");
+    result = result.concat(executeModel(spec));
     if(spec.seasons && spec.seasons.includes("winter")) result.push("beefy");
     if(spec.seasons && spec.seasons.includes("summer")) {
         if(["sparta", "atlantis"].includes(spec.country)) result.push("white lightening");
@@ -23,8 +23,14 @@ export default function(spec) {
 }
 
 function executeModel(spec) {
+    let model = getModel();
     return model
-        .filter((r) => r.condition(spec))
+        .filter((r) => isActive(r, spec))
         .map((r) => r.result);
     
+}
+
+function isActive(rule, spec) {
+    if (rule.condition === 'atNight') return spec.atNight;
+    throw new Error("unable to handle " + rule.condition);
 }

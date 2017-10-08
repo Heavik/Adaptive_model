@@ -1,4 +1,5 @@
 import recommender from './recommender.js';
+import { loadJson } from './recommendationModel.js';
 
 let spec = {
     atNight: false,
@@ -7,5 +8,6 @@ let spec = {
     minDuration: 300
 };
 
+loadJson();
 let result = recommender(spec);
 console.log(result);
